@@ -426,7 +426,7 @@ func TestCursedRenderer_restoresKittyKeyboardStack(t *testing.T) {
 	render := func(v View) {
 		t.Helper()
 		r.render(v)
-		if err := r.flush(false); err != nil {
+		if _, err := r.flush(false); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -487,7 +487,7 @@ func TestCursedRenderer_updatesKittyKeyboardFlagsInPlace(t *testing.T) {
 	render := func(v View) {
 		t.Helper()
 		r.render(v)
-		if err := r.flush(false); err != nil {
+		if _, err := r.flush(false); err != nil {
 			t.Fatal(err)
 		}
 	}
