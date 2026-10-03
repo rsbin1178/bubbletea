@@ -869,7 +869,9 @@ func (p *Program) eventLoop(model Model, cmds chan Cmd) (Model, error) {
 				p.execute(fmt.Sprint(msg.Msg))
 
 			case printLineMessage:
-				p.renderer.insertAbove(msg.messageBody) //nolint:errcheck,gosec
+				if err := p.renderer.insertAbove(msg.messageBody); err != nil {
+					return model, err
+				}
 
 			case clearScreenMsg:
 				p.renderer.clearScreen()
