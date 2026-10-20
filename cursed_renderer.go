@@ -302,7 +302,7 @@ func (s *cursedRenderer) flush(closing bool) (bool, error) {
 
 // flushLocked is also used by insertAbove, which holds the lock for the entire
 // flush/insert/restore transaction.
-func (s *cursedRenderer) flushLocked(closing bool) error {
+func (s *cursedRenderer) flushLocked(closing bool) (bool, error) {
 	view := s.view
 	frameArea := uv.Rect(0, 0, s.width, s.height)
 	if len(view.Content) == 0 {
@@ -783,7 +783,7 @@ func (s *cursedRenderer) insertAbove(str string) error {
 		return nil
 	}
 	// Measure the physical frame after flushing any pending View or resize.
-	if err := s.flushLocked(false); err != nil {
+	if _, err := s.flushLocked(false); err != nil {
 		return err
 	}
 	if s.view.AltScreen {
@@ -813,7 +813,9 @@ func (s *cursedRenderer) insertAbove(str string) error {
 		s.scr.SetPosition(0, 0)
 		s.scr.Erase()
 		s.pendingErase = true
-		return s.flushLocked(false)
+		_, err := s.flushLocked(false)
+
+		return err
 	}
 
 	// Reserving more rows than fit above the frame would scroll the frame
@@ -844,7 +846,9 @@ func (s *cursedRenderer) insertAbove(str string) error {
 	// Insertion changed the terminal cursor even if the View is identical.
 	// Bypass the equality fast path to restore the View and cursor now.
 	s.pendingErase = true
-	return s.flushLocked(false)
+	_, err := s.flushLocked(false)
+
+	return err
 }
 
 func (s *cursedRenderer) writeInsert(str string) error {

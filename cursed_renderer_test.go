@@ -103,7 +103,7 @@ func TestCursedRenderer_insertAboveMultiScreen(t *testing.T) {
 	view := NewView("CONTROLS\n> input\nSTATUS")
 	view.Cursor = NewCursor(2, 1)
 	r.render(view)
-	if err := r.flush(false); err != nil {
+	if _, err := r.flush(false); err != nil {
 		t.Fatal(err)
 	}
 	if !strings.Contains(e.String(), view.Content) {
@@ -186,7 +186,7 @@ func TestCursedRenderer_insertAbovePendingView(t *testing.T) {
 						t.Error("insertion changed native history ownership")
 					}
 					before := terminalHistory(e)
-					if err := r.flush(false); err != nil {
+					if _, err := r.flush(false); err != nil {
 						t.Fatal(err)
 					}
 					if before != terminalHistory(e) {
@@ -210,7 +210,7 @@ func TestCursedRenderer_insertAbovePendingShrink(t *testing.T) {
 	r.setNoInput(true)
 	r.setColorProfile(colorprofile.TrueColor)
 	r.render(NewView(strings.Repeat("old frame\n", 7) + "old footer"))
-	if err := r.flush(false); err != nil {
+	if _, err := r.flush(false); err != nil {
 		t.Fatal(err)
 	}
 	view := NewView("CONTROLS\n> input\nSTATUS")
@@ -254,7 +254,7 @@ func TestCursedRenderer_insertAboveFollowingFrame(t *testing.T) {
 				}
 				assertTerminalLines(t, e, lines)
 				r.render(NewView(strings.ReplaceAll(frame, "M", "N")))
-				if err := r.flush(false); err != nil {
+				if _, err := r.flush(false); err != nil {
 					t.Fatal(err)
 				}
 				if err := r.insertAbove("G"); err != nil {
@@ -332,7 +332,7 @@ func TestCursedRenderer_insertAboveWriterErrors(t *testing.T) {
 				view.Cursor = NewCursor(2, strings.Count(frame, "\n")-1)
 				r.render(view)
 				if !tt.pending {
-					if err := r.flush(false); err != nil {
+					if _, err := r.flush(false); err != nil {
 						t.Fatal(err)
 					}
 				}
